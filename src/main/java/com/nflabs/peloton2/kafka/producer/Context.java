@@ -14,7 +14,13 @@ public class Context {
 	}
 
 	public String getString(String key){
-		return prop.getProperty(key);
+		String value = prop.getProperty(key);
+
+		if (value == null || value.isEmpty()) {
+			return System.getenv(key);
+		}
+
+		return value;
 	}
 
 }

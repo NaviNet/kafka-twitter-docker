@@ -30,7 +30,7 @@ public class TwitterProducer {
     /** The actual Twitter stream. It's set up to collect raw JSON data */
     private TwitterStream twitterStream;
     
-    private void start(Context context) {
+    private void start(final Context context) {
 	
 	/** Producer properties **/
 	Properties props = new Properties();
@@ -81,6 +81,8 @@ public class TwitterProducer {
 		public void onScrubGeo(long userId, long upToStatusId) {}
 		
 		public void onException(Exception ex) {
+		    logger.info("EXCEPTION OCCURRED");
+		    logger.info(ex.getMessage());
 		    logger.info("Shutting down Twitter sample stream...");
 		    twitterStream.shutdown();
 		}

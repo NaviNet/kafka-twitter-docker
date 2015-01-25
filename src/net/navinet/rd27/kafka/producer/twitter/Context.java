@@ -1,4 +1,4 @@
-package com.nflabs.peloton2.kafka.producer;
+package net.navinet.rd27.kafka.producer.twitter;
 
 import java.io.FileInputStream;
 import java.io.InputStream;

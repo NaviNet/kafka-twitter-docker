@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-mainClassName = "com.nflabs.peloton2.kafka.producer.TwitterProducer"
+mainClassName = "net.navinet.rd27.kafka.producer.twitter.TwitterProducer"
 
 sourceCompatibility = JavaVersion.VERSION_1_6
 version = '0.0.1'

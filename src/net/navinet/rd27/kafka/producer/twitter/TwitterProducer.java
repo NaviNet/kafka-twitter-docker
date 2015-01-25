@@ -1,4 +1,4 @@
-package com.nflabs.peloton2.kafka.producer;
+package net.navinet.rd27.kafka.producer.twitter;
 
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
@@ -9,6 +9,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import twitter4j.FilterQuery;
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
@@ -19,18 +20,20 @@ import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.json.DataObjectFactory;
 
 public class TwitterProducer {
-    private static final Logger logger = LoggerFactory.getLogger(TwitterProducer.class);
-    
-    /** Information necessary for accessing the Twitter API */
-    private String consumerKey;
-    private String consumerSecret;
-    private String accessToken;
-    private String accessTokenSecret;
-    
-    /** The actual Twitter stream. It's set up to collect raw JSON data */
-    private TwitterStream twitterStream;
-    
-    private void start(final Context context) {
+	private static final Logger logger = LoggerFactory
+			.getLogger(TwitterProducer.class);
+
+	/** Information necessary for accessing the Twitter API */
+	private String consumerKey;
+	private String consumerSecret;
+	private String accessToken;
+	private String accessTokenSecret;
+	private String keywords;
+
+	/** The actual Twitter stream. It's set up to collect raw JSON data */
+	private TwitterStream twitterStream;
+
+	private void start(final Context context) {
 	
 	/** Producer properties **/
 	Properties props = new Properties();
@@ -47,6 +50,7 @@ public class TwitterProducer {
 	consumerSecret = context.getString(TwitterSourceConstant.CONSUMER_SECRET_KEY);
 	accessToken = context.getString(TwitterSourceConstant.ACCESS_TOKEN_KEY);
 	accessTokenSecret = context.getString(TwitterSourceConstant.ACCESS_TOKEN_SECRET_KEY);
+	keywords = context.getString(TwitterSourceConstant.KEYWORDS_KEY);
 	
 	ConfigurationBuilder cb = new ConfigurationBuilder();
 	cb.setOAuthConsumerKey(consumerKey);
@@ -93,18 +97,25 @@ public class TwitterProducer {
 	/** Bind the listener **/
 	twitterStream.addListener(listener);
 	/** GOGOGO **/
-	twitterStream.sample();   
-    }
-    
-    public static void main(String[] args) {
-	try {
-	    Context context = new Context(args[0]);
-	    TwitterProducer tp = new TwitterProducer();
-	    tp.start(context);
-	    
-	} catch (Exception e) {
-	    logger.info(e.getMessage());
+	if (keywords == null || keywords.isEmpty()) {
+		twitterStream.sample();   
 	}
-	
+	else {
+		FilterQuery filterQuery = new FilterQuery();
+		filterQuery.track(keywords.split(","));
+		twitterStream.filter(filterQuery);
+	}
     }
+
+	public static void main(String[] args) {
+		try {
+			Context context = new Context(args[0]);
+			TwitterProducer tp = new TwitterProducer();
+			tp.start(context);
+
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+		}
+
+	}
 }

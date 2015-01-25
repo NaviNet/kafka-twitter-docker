@@ -1,4 +1,4 @@
-package com.nflabs.peloton2.kafka.producer;
+package net.navinet.rd27.kafka.producer.twitter;
 
 public class TwitterSourceConstant {
     public static final String CONSUMER_KEY_KEY = "TWITTER_CONSUMER_KEY";
